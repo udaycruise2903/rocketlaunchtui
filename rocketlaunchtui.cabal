@@ -1,0 +1,21 @@
+name:                rocketlaunchtui
+version:             0.1.0.0
+-- synopsis:
+-- description:
+homepage:            https://github.com/githubuser/rocketlaunchtui#readme
+license:
+license-file:
+author:              Uday Kiran N
+maintainer:          udaycruise2903@gmail.com
+copyright:           2022 Uday Kiran N
+category:            Web
+build-type:          Simple
+cabal-version:       >=1.10
+extra-source-files:  README.md
+                     ChangeLog.md
+
+executable rocketlaunchtui
+  hs-source-dirs:      src
+  main-is:             Main.hs
+  default-language:    Haskell2010
+  build-depends:       base >= 4.7 && < 5
