@@ -25,4 +25,5 @@ executable rocketlaunchtui
                        bytestring,
                        brick,
                        aeson,
-                       sqlite-simple
+                       sqlite-simple,
+                       http-conduit

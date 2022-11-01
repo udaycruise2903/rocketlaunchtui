@@ -7,6 +7,9 @@ import GHC.Generics
 import Data.Aeson                      
 import Database.SQLite.Simple           
 import Data.Text (Text,unpack)
+import Control.Applicative
+import Control.Monad
+import Network.HTTP.Conduit (simpleHttp)
 import qualified Data.ByteString.Lazy.Char8 as BC 
 
 -- The type received from JSON
@@ -19,6 +22,14 @@ data Spacecraft = Spacecraft
 -- Auto-convert database rows into Spacecraft types for queries
 instance FromRow Spacecraft where
     fromRow = Spacecraft <$> field <*> field
+
+-- spacecrafts api
+jsonURL :: String
+jsonURL = "https://isro.vercel.app/api/spacecrafts"
+
+getJSON :: IO BC.ByteString
+getJSON = simpleHttp jsonURL
+
 
 -- "insert" operation
 -- Open a DB connection, create a table (maybe), insert the value, close the
@@ -38,14 +49,13 @@ printDB =
     putStrLn (unlines (map show res))
     close conn
 
--- Glue it all together by
+-- Main has
 -- 1. Make the json 2. parse the json 3. insert to DB 4. print entire DB
 main :: IO ()
-main =
-  do let spacecraft_json = encode (Spacecraft 1 "Aryabhata")
-     putStrLn $ "JSON: " ++ BC.unpack spacecraft_json
-     case eitherDecode spacecraft_json of
-        Left err     -> error err
-        Right spacecraft -> insertSpacecraftIntoDB spacecraft
-     putStrLn "----- Database -----"
-     printDB
+main = do
+   d <- (eitherDecode <$> getJSON) :: IO (Either String Spacecraft)
+   case d of
+     Left err     -> error err
+     Right spacecraft -> insertSpacecraftIntoDB spacecraft
+   putStrLn "----- Database -----"
+   printDB
