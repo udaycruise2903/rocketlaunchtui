@@ -18,7 +18,11 @@ executable rocketlaunchtui
   hs-source-dirs:      src
   ghc-options:         -threaded
   main-is:             Main.hs
-  other-modules:       ParseData
+--  other-modules:       ParseData
   default-language:    Haskell2010
   build-depends:       base >= 4.7 && < 5,
-                       brick
+                       text,
+                       bytestring,
+                       brick,
+                       aeson,
+                       sqlite-simple
