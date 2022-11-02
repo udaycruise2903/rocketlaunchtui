@@ -14,35 +14,37 @@ import Control.Applicative
 import Control.Monad
 import Network.HTTP.Conduit (simpleHttp)
 import qualified Data.ByteString.Lazy.Char8 as BC 
-
 import Brick (Widget, simpleMain, str)
 
 -- The type received from JSON
 data DataPoint = DataPoint 
-          { id :: Integer
-          , name :: Text
+          { id :: Text
+          , country :: Text
+          , launch_date :: Text
+          , mass :: Text
+          , launcher :: Text
           } deriving (Eq, Show, Read, Generic, FromJSON, ToJSON)
 
-data Spacecrafts = Spacecrafts 
-          { spacecrafts :: [DataPoint]
+data Satellites = Satellites 
+          { customer_satellites :: [DataPoint]
           } deriving (Eq, Show, Read, Generic, FromJSON, ToJSON )
 
--- spacecrafts api
+-- satellites api
 jsonURL :: String
-jsonURL = "https://isro.vercel.app/api/spacecrafts"
+jsonURL = "https://isro.vercel.app/api/customer_satellites"
 
 getJSON :: IO BC.ByteString
 getJSON = simpleHttp jsonURL
 
 -- GUI
 ui :: Widget ()
-ui = str "Welcome"
+ui = str "Customer satellites launched by ISRO"
 
 -- parse the json, insert to DB, print entire DB
 main :: IO ()
 main = do
   simpleMain ui
-  d <- (eitherDecode <$> getJSON) :: IO (Either String Spacecrafts)
-  case d of
-    Left err     -> putStrLn err
-    Right spacecrafts -> print spacecrafts
+  s <- (eitherDecode <$> getJSON) :: IO (Either String Satellites)
+  case s of
+      Left err     -> putStrLn err
+      Right satellites -> print satellites
